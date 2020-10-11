@@ -82,7 +82,7 @@
     fetch(`https://company-search-sathesh.herokuapp.com/saveCompanies`, config).then((data) => {
       return data.json()
     }).then(data => {
-      window.location.replace(https://company-search-sathesh.herokuapp.com/companies")
+      window.location.replace("https://company-search-sathesh.herokuapp.com/companies")
     }).catch(e => {
       swal("Error", "Error while Saving the Data", "error");
     })
