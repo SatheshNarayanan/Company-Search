@@ -39,10 +39,10 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Origin: "https://s8kir.sse.codesandbox.io/"
+          Origin: "https://company-search-sathesh.herokuapp.com/"
         }
       };
-      fetch(`https://s8kir.sse.codesandbox.io/${value}`, config).then((data) => {
+      fetch(`https://company-search-sathesh.herokuapp.com/${value}`, config).then((data) => {
         return data.text()
       }).then(data => {
         lists.innerHTML = data
@@ -75,14 +75,14 @@
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Origin: "https://s8kir.sse.codesandbox.io/"
+        Origin: "https://company-search-sathesh.herokuapp.com/"
       },
       body: JSON.stringify({ data: resultCompanies })
     };
-    fetch(`https://s8kir.sse.codesandbox.io/saveCompanies`, config).then((data) => {
+    fetch(`https://company-search-sathesh.herokuapp.com/saveCompanies`, config).then((data) => {
       return data.json()
     }).then(data => {
-      window.location.replace("https://s8kir.sse.codesandbox.io/companies")
+      window.location.replace(https://company-search-sathesh.herokuapp.com/companies")
     }).catch(e => {
       swal("Error", "Error while Saving the Data", "error");
     })
