@@ -1,0 +1,95 @@
+<div class="container my-5">
+  <h3 class="text-center my-5"> Find the Company that you are looking for...</h3>
+  <div class="form-group">
+    <input type="text" class="form-control" id="search" aria-describedby="search"
+      placeholder="Please enter the company to be searched">
+  </div>
+  <div id="list">
+  </div>
+  <div class="text-center">
+    <button class=" btn btn-warning btn-lg" id="saveCompanies">Submit</button>
+    <small id="saveCompanies" class="form-text text-muted">
+      Note : Submitting with multiple companies in the Search list saves them all.
+    </small>
+  </div>
+</div>
+<script>
+
+  const button = document.getElementById("search")
+  const lists = document.getElementById("list")
+  const saveComp = document.getElementById("saveCompanies")
+
+  //Debounce function to prevent the Server being hitted many times
+  const debounce = (func, delay) => {
+    let debounceTimer
+    return function () {
+      const context = this
+      const args = arguments
+      clearTimeout(debounceTimer)
+      debounceTimer
+        = setTimeout(() => func.apply(context, args), delay)
+    }
+  }
+
+  //for Searching the company based on name
+  const searchCompany = (e) => {
+    const value = e.target.value
+    if (value.length > 0) {
+      const config = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://s8kir.sse.codesandbox.io/"
+        }
+      };
+      fetch(`https://s8kir.sse.codesandbox.io/${value}`, config).then((data) => {
+        return data.text()
+      }).then(data => {
+        lists.innerHTML = data
+      }).catch(e => {
+        swal("Warning", "Error while Fetching the Data", "warning");
+      });
+    } else {
+      if (lists.childNodes.length > 0) {
+        while (lists.firstChild) {
+          lists.removeChild(lists.firstChild);
+        }
+      }
+    }
+  }
+
+  //for Submitting the Companyt Lists (Single or Multiple)
+  const submitFunc = () => {
+    const childData = lists.children
+    let resultCompanies = []
+    for (let i = 0; i < childData.length; i++) {
+      const data = childData[i].id.split("/")
+      const jsonFormat = {
+        filter: data[0],
+        companyName: childData[i].innerHTML.trim(),
+        CIN: data[2]
+      }
+      resultCompanies.push(jsonFormat)
+    }
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "https://s8kir.sse.codesandbox.io/"
+      },
+      body: JSON.stringify({ data: resultCompanies })
+    };
+    fetch(`https://s8kir.sse.codesandbox.io/saveCompanies`, config).then((data) => {
+      return data.json()
+    }).then(data => {
+      window.location.replace("https://s8kir.sse.codesandbox.io/companies")
+    }).catch(e => {
+      swal("Error", "Error while Saving the Data", "error");
+    })
+  }
+
+  //Event Listeners
+  button.addEventListener('keyup', debounce(searchCompany, 300));
+  saveComp.addEventListener('click', debounce(submitFunc, 300));
+
+</script>
